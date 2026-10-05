@@ -5,8 +5,8 @@
 
 window.HireSpec = (function () {
   const SPEC = 'munder-difflin/hire@1';
-  const PROVIDERS = ['claude', 'antigravity', 'codex', 'cursor'];
-  const PROVIDER_LABEL = { claude: 'Claude Code', antigravity: 'Antigravity', codex: 'Codex', cursor: 'Cursor' };
+  const PROVIDERS = ['claude', 'antigravity', 'codex', 'cursor', 'kiro'];
+  const PROVIDER_LABEL = { claude: 'Claude Code', antigravity: 'Antigravity', codex: 'Codex', cursor: 'Cursor', kiro: 'Kiro' };
   const FLAG_RE = /^[A-Za-z0-9._\/=:,@+-]{1,100}$/;
   // Keep these allowlists in lockstep with src/shared/hire.ts and
   // src/shared/mcpCatalog.ts. test/hire-validator-parity.test.cjs locks the
@@ -56,7 +56,7 @@ window.HireSpec = (function () {
     cap(raw.homepage, 300, 'homepage');
     if (raw.provider !== undefined) {
       const p = normalizeProvider(raw.provider);
-      if (!PROVIDERS.includes(p)) errors.push('"provider" must be claude, antigravity (or agy), codex, or cursor');
+      if (!PROVIDERS.includes(p)) errors.push('"provider" must be claude, antigravity (or agy), codex, cursor, or kiro');
     }
     if (raw.commandFlags !== undefined) {
       if (!Array.isArray(raw.commandFlags) || raw.commandFlags.length > 16) {

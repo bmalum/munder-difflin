@@ -174,13 +174,13 @@ test('onboarding lists every engine — orchestrator-capable first, workers-only
 test('God only sees providers that can drain hive inbox messages', () => {
   // God-eligible = supportsModel && canReceiveInbox: kimi and copilot are
   // excluded (no inbox drain path), custom is excluded (no model picker).
-  // Cursor is interactive (no -p) so it IS god-eligible.
+  // Cursor and Kiro are interactive (no -p) so they ARE god-eligible.
   assert.deepEqual(
     modelProvidersForAgent(true).map((preset) => preset.id),
-    ['claude', 'codex', 'grok', 'gemini', 'antigravity', 'qwen', 'opencode', 'crush', 'pi', 'cursor']
+    ['claude', 'codex', 'grok', 'gemini', 'antigravity', 'qwen', 'opencode', 'crush', 'pi', 'cursor', 'kiro']
   );
   assert.deepEqual(
     modelProvidersForAgent(false).map((preset) => preset.id),
-    ['claude', 'codex', 'grok', 'kimi', 'gemini', 'antigravity', 'qwen', 'opencode', 'crush', 'pi', 'copilot', 'cursor']
+    ['claude', 'codex', 'grok', 'kimi', 'gemini', 'antigravity', 'qwen', 'opencode', 'crush', 'pi', 'copilot', 'cursor', 'kiro']
   );
 });

@@ -642,7 +642,8 @@
       "antigravity": "Antigravity — Google Gemini",
       "qwen": "Qwen — يشغّل نموذج Qwen محليًا على جهازك",
       "gemini": "Gemini CLI - Google Gemini",
-      "cursor": "Cursor Agent CLI — يستخدم أرصدة Cursor لديك (Luna، Composer، …)"
+      "cursor": "Cursor Agent CLI — يستخدم أرصدة Cursor لديك (Luna، Composer، …)",
+      "kiro": "Kiro CLI — من AWS؛ يسجّل الدخول بحساب Kiro الخاص بك (Builder ID أو مؤسستك)، بدون مفتاح API"
     },
     "home": {
       "descPlain": "أنشئ مجلدًا جديدًا فارغًا ليتّخذه التطبيق منزلًا. كل ما يتذكّره التطبيق — إعداداته الخاصة وذاكرة وكلائك — يُخزَّن هنا. شيء مثل ~/HarnessAgents يفي بالغرض. وسننشئه لك إن لم يكن موجودًا.",

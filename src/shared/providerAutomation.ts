@@ -144,6 +144,13 @@ const CONTEXT_COMMANDS: Record<AgentProvider, ProviderContextCommands> = {
   // auto-compact. Revisit when a shipped command table is transcribed.
   cursor: NO_CONTEXT_COMMANDS,
 
+  // Kiro CLI documents both verbs (Slash commands reference): `/compact`
+  // "summarize conversation history to free context space" and `/clear`
+  // "clear the conversation history within the current session" (no summary,
+  // same session, executes immediately). `/compact` takes NO focus argument —
+  // its usage line is bare — so the rule message is not appended.
+  kiro: { compact: '/compact', clear: '/clear', compactTakesFocus: false },
+
   // An arbitrary user binary. We cannot know its command surface, and guessing
   // means typing slashes into someone's unknown REPL.
   custom: NO_CONTEXT_COMMANDS

@@ -106,6 +106,19 @@ const SHIPPED = {
     ["claude-opus-4-8-high", "Opus 4.8 1M"],
     ["claude-sonnet-5-thinking-high", "Sonnet 5 1M Thinking"]
   ],
+  kiro: [
+    [undefined, "CLI default (auto)"],
+    ["auto", "Auto (Kiro picks per task)"],
+    ["claude-sonnet-4.6", "Claude Sonnet 4.6 · 1M"],
+    ["claude-sonnet-5", "Claude Sonnet 5 · 1M"],
+    ["claude-opus-4.8", "Claude Opus 4.8 · 1M"],
+    ["claude-opus-5", "Claude Opus 5 · 1M"],
+    ["claude-haiku-4.5", "Claude Haiku 4.5 (cheap)"],
+    ["gpt-5.6-luna", "GPT-5.6 Luna · 1M (cheap)"],
+    ["gpt-5.6-terra", "GPT-5.6 Terra · 1M"],
+    ["deepseek-3.2", "DeepSeek V3.2 (cheap)"],
+    ["qwen3-coder-next", "Qwen3 Coder Next (cheap)"]
+  ],
 };
 
 /** A stand-in catalog: the real one is deliberately all-unbounded (the port had
@@ -149,7 +162,7 @@ test('the catalog is the schema config.ts expects', () => {
   assert.deepEqual(
     Object.keys(catalog.providers).sort(),
     ['antigravity', 'claude', 'copilot', 'codex', 'crush', 'cursor', 'custom',
-      'gemini', 'grok', 'kimi', 'opencode', 'pi', 'qwen'].sort()
+      'gemini', 'grok', 'kimi', 'kiro', 'opencode', 'pi', 'qwen'].sort()
   );
 });
 

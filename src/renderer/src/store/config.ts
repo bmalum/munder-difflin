@@ -230,6 +230,10 @@ export type { CatalogModel, ModelCatalog } from '@shared/modelCatalogPayload';
  *  - cursor: ids match `cursor-agent models` / `--model` (Cursor account catalog).
  *    Luna is the cheap, high-context default for Michael; the rest are curated
  *    quick-picks and the command field stays editable for any live slug.
+ *  - kiro: ids match `kiro-cli chat --list-models` / `--model` (plain ids such
+ *    as claude-sonnet-4.6; 'auto' lets Kiro route per task and is the CLI's own
+ *    default). Curated from the live list; the command field stays editable.
+ *    Billing is Kiro credits via the logged-in CLI — no key enters this app.
  *  - grok: the models reported by the installed Grok CLI (`grok models`).
  *  - kimi: managed Kimi Code aliases accepted by `kimi --model <alias>`.
  *  - custom: no presets at all; the command field is the whole interface.

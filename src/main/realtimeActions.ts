@@ -38,6 +38,7 @@ import { ipcMain } from 'electron';
 import type { HiveMessage, HiveTask, Registry } from './hive';
 import type { ScheduledMission } from './config';
 import { inferAgentProvider } from '../shared/agentProvider';
+import { tokenizeCommand } from '../shared/commandLine';
 import { clearCommandForProvider } from '../shared/providerAutomation';
 import { resolveGodName } from '../shared/godIdentity';
 
@@ -47,7 +48,10 @@ export const VOICE_ACTOR = 'michael-voice';
 export interface RealtimeSpawnSpec {
   id: string;
   cwd: string;
+  /** The bare executable (the PTY layer resolves ONE command name, never a line). */
   command: string;
+  /** The rest of the command line, as argv. */
+  args?: string[];
   provider?: string;
   hive?: { id: string; name: string; provider?: string; role?: string; cwd: string };
 }
@@ -164,7 +168,7 @@ const PENDING_TTL_MS = 120_000;
 const PROVIDER_COMMAND: Record<string, string> = {
   claude: 'claude', codex: 'codex', antigravity: 'antigravity', gemini: 'gemini',
   opencode: 'opencode', crush: 'crush', pi: 'pi', qwen: 'qwen', copilot: 'copilot',
-  cursor: 'cursor-agent'
+  cursor: 'cursor-agent', kiro: 'kiro-cli chat'
 };
 
 /** Bare affirmations that must NEVER authorize a destructive op on their own —
@@ -651,9 +655,14 @@ function proposeDestructive(deps: RealtimeActionDeps, verb: string, a: Record<st
     const cwd =
       str(a.cwd) || godCwd || Object.values(reg.agents).find((m) => m.cwd)?.cwd || '';
     if (!cwd) return { ok: false, spoken: 'I need a working directory to hire into — none is configured.' };
-    const command = str(a.command) || PROVIDER_COMMAND[provider] || 'claude';
+    // A provider's canonical command may be a LINE, not a bare binary (Kiro is
+    // `kiro-cli chat`), and a caller-supplied `command` may carry flags. The PTY
+    // layer resolves exactly one executable name, so split here with the same
+    // tokenizer every other spawn path uses and hand the rest over as argv.
+    const line = str(a.command) || PROVIDER_COMMAND[provider] || 'claude';
+    const [command = line, ...args] = tokenizeCommand(line);
     const id = `${slug(name)}-${shortId()}`;
-    const spec2: RealtimeSpawnSpec = { id, cwd, command, provider, hive: { id, name, provider, role: role || undefined, cwd } };
+    const spec2: RealtimeSpawnSpec = { id, cwd, command, args, provider, hive: { id, name, provider, role: role || undefined, cwd } };
     pending = { verb, confirmWord: 'spawn', targetLabel: name, createdAt: Date.now(), commit: buildSpawn(deps, spec2, `${name} on ${provider}`) };
     return {
       ok: true,

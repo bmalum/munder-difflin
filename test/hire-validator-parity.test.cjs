@@ -148,7 +148,7 @@ test('every published hire manifest passes both validators', () => {
 });
 
 test('every runtime provider and allowlisted capability id passes the gallery validator', () => {
-  for (const provider of ['claude', 'antigravity', 'agy', 'codex', 'cursor']) {
+  for (const provider of ['claude', 'antigravity', 'agy', 'codex', 'cursor', 'kiro']) {
     assert.equal(validateInGallery(manifest({ provider })).ok, true, `provider ${provider}`);
   }
   for (const skill of BUNDLED_SKILL_IDS) {
@@ -234,7 +234,7 @@ test('the published JSON schema reflects runtime providers and allowlists', () =
   const schema = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/hires/spec/hire.schema.json'), 'utf8'));
   assert.deepEqual(
     schema.properties.provider.enum,
-    ['claude', 'antigravity', 'agy', 'codex', 'cursor']
+    ['claude', 'antigravity', 'agy', 'codex', 'cursor', 'kiro']
   );
   assert.deepEqual(schema.properties.skills.items.enum, Array.from(BUNDLED_SKILL_IDS));
   assert.deepEqual(schema.properties.mcpServers.items.enum, MCP_CATALOG.map(({ id }) => id));

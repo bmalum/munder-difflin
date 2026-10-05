@@ -120,6 +120,19 @@
       { "id": "claude-opus-4-8-high", "label": "Opus 4.8 1M", "minAppVersion": null, "maxAppVersion": null },
       { "id": "claude-sonnet-5-thinking-high", "label": "Sonnet 5 1M Thinking", "minAppVersion": null, "maxAppVersion": null }
     ],
+    "kiro": [
+      { "label": "CLI default (auto)", "minAppVersion": null, "maxAppVersion": null },
+      { "id": "auto", "label": "Auto (Kiro picks per task)", "minAppVersion": null, "maxAppVersion": null },
+      { "id": "claude-sonnet-4.6", "label": "Claude Sonnet 4.6 · 1M", "minAppVersion": null, "maxAppVersion": null },
+      { "id": "claude-sonnet-5", "label": "Claude Sonnet 5 · 1M", "minAppVersion": null, "maxAppVersion": null },
+      { "id": "claude-opus-4.8", "label": "Claude Opus 4.8 · 1M", "minAppVersion": null, "maxAppVersion": null },
+      { "id": "claude-opus-5", "label": "Claude Opus 5 · 1M", "minAppVersion": null, "maxAppVersion": null },
+      { "id": "claude-haiku-4.5", "label": "Claude Haiku 4.5 (cheap)", "minAppVersion": null, "maxAppVersion": null },
+      { "id": "gpt-5.6-luna", "label": "GPT-5.6 Luna · 1M (cheap)", "minAppVersion": null, "maxAppVersion": null },
+      { "id": "gpt-5.6-terra", "label": "GPT-5.6 Terra · 1M", "minAppVersion": null, "maxAppVersion": null },
+      { "id": "deepseek-3.2", "label": "DeepSeek V3.2 (cheap)", "minAppVersion": null, "maxAppVersion": null },
+      { "id": "qwen3-coder-next", "label": "Qwen3 Coder Next (cheap)", "minAppVersion": null, "maxAppVersion": null }
+    ],
     "custom": []
   }
 }

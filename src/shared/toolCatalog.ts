@@ -108,7 +108,9 @@ export function toolCatalog(): ToolSpec[] {
     .filter((p) => p.id !== 'custom' && !!p.defaultCommand)
     .map((p) => ({
       id: `engine:${p.id}`,
-      bin: p.defaultCommand,
+      // The probe resolves ONE executable on PATH. A default command may be a
+      // line (Kiro's `kiro-cli chat`), so only its first token is the binary.
+      bin: p.defaultCommand.trim().split(/\s+/)[0],
       label: p.label,
       kind: 'engine' as const,
       why: `Agent engine — ${p.defaultCommand}.`,

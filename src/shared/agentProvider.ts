@@ -34,6 +34,7 @@ export type AgentProvider =
   | 'pi'
   | 'copilot'
   | 'cursor'
+  | 'kiro'
   | 'custom';
 
 /** Structured descriptor for how a NON-hiveAware provider gets hive lifecycle
@@ -568,6 +569,49 @@ export const AGENT_PROVIDER_PRESETS: AgentProviderPreset[] = [
     docsUrl: 'https://cursor.com/docs/cli/install'
   },
   {
+    // Kiro CLI (`kiro-cli chat`, https://kiro.dev/docs/cli). Interactive TUI in a
+    // PTY. Authentication is handled entirely by Kiro's own `kiro-cli login`
+    // (Builder ID / IAM Identity Center / Midway), so no API key or OAuth token
+    // ever passes through this app — the harness only spawns the already
+    // logged-in CLI. `defaultCommand` is two tokens on purpose: bare `kiro-cli`
+    // prints a subcommand menu, and every spawn path tokenizes the command line
+    // before exec (workerLaunch, spawnAgentCore); the engine probe uses the
+    // first token (toolCatalog).
+    id: 'kiro',
+    label: 'Kiro',
+    defaultCommand: 'kiro-cli chat',
+    commandGroups: [],
+    // `-a, --trust-all-tools`: run any tool without asking. Gated by the floor
+    // config.autoMode toggle like every other engine.
+    autoModeFlag: '--trust-all-tools',
+    autoFlag: '--trust-all-tools',
+    autoStanceTokens: ['-a', '--trust-tools'],
+    supportsModel: true,
+    modelFlag: '--model', // plain id from `kiro-cli chat --list-models`, e.g. claude-sonnet-4.6, or 'auto'
+    hiveAware: false, // no --append-system-prompt/--settings; protocol rides in positionally
+    // No Kiro hook bridge yet — mail delivery uses the terminal work-order /
+    // renderer idle-nudge fallback (same tier as Cursor).
+    canReceiveInbox: true,
+    // `kiro-cli chat [INPUT]`: the first positional is "the first question to
+    // ask", so the hive protocol seeds the session while the TUI stays alive.
+    initialPromptFlag: undefined,
+    positionalInitialPrompt: true,
+    recommendedOrchestratorModel: 'auto',
+    // `--resume-id <SESSION_ID>` resumes a specific conversation. (`-r/--resume`
+    // takes no id and picks the most recent one for the cwd.)
+    resumeFlag: '--resume-id',
+    // Official install is a curl|bash script (not npm), with a PowerShell
+    // twin for Windows 11. The win32 rung runs under cmd.exe, so the PowerShell
+    // one-liner is wrapped in `powershell -c` (Claude's form) and `^|` escapes
+    // the pipe for cmd. Trusted hardcoded constants only; no double-quotes (the
+    // win32 form is wrapped verbatim in `cmd /d /s /c "…"`).
+    nativeInstallCommand: {
+      posix: 'curl -fsSL https://cli.kiro.dev/install | bash',
+      win32: 'powershell -c irm https://cli.kiro.dev/install.ps1 ^| iex'
+    },
+    docsUrl: 'https://kiro.dev/docs/getting-started/installation/'
+  },
+  {
     id: 'custom',
     label: 'Custom',
     defaultCommand: '',
@@ -594,6 +638,7 @@ export function isAgentProvider(value: unknown): value is AgentProvider {
     value === 'pi' ||
     value === 'copilot' ||
     value === 'cursor' ||
+    value === 'kiro' ||
     value === 'custom'
   );
 }
@@ -645,6 +690,9 @@ export function inferAgentProvider(command: string | undefined, explicit?: unkno
   if (bin === 'crush') return 'crush';
   if (bin === 'pi') return 'pi';
   if (bin === 'copilot') return 'copilot';
+  // Kiro ships as `kiro-cli` (`kiro-cli chat …`); the IDE's `kiro` launcher is
+  // not a terminal agent, so only the CLI binary maps here.
+  if (bin === 'kiro-cli') return 'kiro';
   // Cursor ships as `cursor-agent`; `agent` is a shorter alias (generic name — check last).
   if (bin === 'cursor-agent') return 'cursor';
   if (bin === 'agent') return 'cursor';

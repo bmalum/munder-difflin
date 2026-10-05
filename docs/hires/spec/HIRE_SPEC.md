@@ -48,7 +48,7 @@ A manifest is untrusted input. The format is designed so it **cannot**:
 - **Auto-spawn an agent.** Import only pre-fills the form. A human reviews every field —
   the modal shows an "imported" banner — and clicks spawn.
 - **Name an executable.** There is no `command` field. The spawn binary always comes from the
-  user's locally configured provider preset (`claude`, `agy`, `codex`, `cursor`). `provider: "custom"`
+  user's locally configured provider preset (`claude`, `agy`, `codex`, `cursor`, `kiro`). `provider: "custom"`
   is rejected.
 - **Select arbitrary CLI behavior.** `commandFlags` is default-deny. Only `--model`,
   `--max-turns`, `--output-format`, and `--verbose` are accepted, either as
@@ -77,7 +77,7 @@ not shareable; add an exceptional flag by hand after import if you trust and nee
 | `goal` | string ≤ 4000 | | standing mission text |
 | `character` | string ≤ 24 | | office cast id; unknown → default sprite |
 | `accent` | string ≤ 24 | | color name; unknown → default |
-| `provider` | `claude` \| `antigravity` \| `agy` \| `codex` \| `cursor` | | `agy` = alias for `antigravity`; omit = user default |
+| `provider` | `claude` \| `antigravity` \| `agy` \| `codex` \| `cursor` \| `kiro` | | `agy` = alias for `antigravity`; omit = user default |
 | `model` | string ≤ 80 | | provider model id/label |
 | `commandFlags` | string[] ≤ 16 | | allowlisted safe flags and their immediately following values |
 | `capabilities` | string[] ≤ 12 | | hive routing tags |

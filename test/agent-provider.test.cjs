@@ -88,6 +88,48 @@ test('cursor preset is interactive (no -p), uses force+trust auto flags, types s
   assert.strictEqual(ap.bridgeOf('cursor'), undefined, 'no hook/proxy bridge yet');
 });
 
+test('kiro is a recognized, selectable, god-eligible provider', () => {
+  assert.ok(ap.isAgentProvider('kiro'), 'isAgentProvider("kiro")');
+  assert.ok(ap.AGENT_PROVIDER_PRESETS.some((p) => p.id === 'kiro'), 'preset registered');
+  assert.strictEqual(ap.canReceiveInbox('kiro'), true, 'interactive TUI can receive inbox');
+});
+
+test('inferAgentProvider maps the kiro-cli binary (with path/subcommand/flags) to kiro', () => {
+  assert.strictEqual(ap.inferAgentProvider('kiro-cli chat'), 'kiro');
+  assert.strictEqual(ap.inferAgentProvider('/Users/me/.local/bin/kiro-cli chat --model claude-sonnet-4.6'), 'kiro');
+  // The IDE launcher is not the terminal agent.
+  assert.strictEqual(ap.inferAgentProvider('kiro'), 'custom');
+});
+
+test('kiro preset spawns the chat subcommand, trusts all tools in auto mode, seeds positionally', () => {
+  const p = ap.providerPreset('kiro');
+  assert.strictEqual(p.defaultCommand, 'kiro-cli chat', 'bare kiro-cli prints a menu; chat is the agent');
+  assert.strictEqual(p.initialPromptFlag, undefined, 'no prompt flag');
+  assert.strictEqual(p.positionalInitialPrompt, true, '`kiro-cli chat [INPUT]` takes the first question positionally');
+  assert.strictEqual(ap.autoModeFlagForProvider('kiro'), '--trust-all-tools');
+  assert.strictEqual(p.autoFlag, '--trust-all-tools', 'autoFlag mirrors autoModeFlag');
+  // `-a` is the short form; an explicit --trust-tools allowlist is also a stance.
+  assert.strictEqual(ap.hasAutoModeStance(['chat', '-a'], 'kiro'), true);
+  assert.strictEqual(ap.hasAutoModeStance(['chat', '--trust-tools=fs_read'], 'kiro'), false, 'token match, not prefix');
+  assert.strictEqual(ap.hasAutoModeStance(['chat', '--trust-tools', 'fs_read'], 'kiro'), true);
+  assert.deepStrictEqual(ap.argsWithAutoModeFlag(['chat'], true, 'kiro'), ['chat', '--trust-all-tools']);
+  assert.ok(p.supportsModel && p.modelFlag === '--model', 'model picker + --model');
+  assert.strictEqual(p.recommendedOrchestratorModel, 'auto');
+  assert.strictEqual(p.resumeFlag, '--resume-id', 'resume a specific session by id');
+  assert.strictEqual(p.hiveAware, false, 'no Claude-only identity injection');
+  assert.strictEqual(ap.bridgeOf('kiro'), undefined, 'no hook/proxy bridge yet');
+});
+
+test('kiro install info is the official native installer (no npm rung, no API key)', () => {
+  const posix = ap.installInfoForProvider('kiro', 'darwin');
+  assert.strictEqual(posix.command, undefined, 'no npm package exists');
+  assert.strictEqual(posix.nativeCommand, 'curl -fsSL https://cli.kiro.dev/install | bash');
+  const win = ap.installInfoForProvider('kiro', 'win32');
+  assert.ok(win.nativeCommand && !win.nativeCommand.includes('"'), 'win32 rung carries no double-quotes');
+  assert.ok(posix.docsUrl && posix.docsUrl.startsWith('https://kiro.dev/'));
+  assert.deepStrictEqual(ap.nonInteractiveEnvForProvider('kiro'), {}, 'no token/key env is injected');
+});
+
 test('codex preset still resolves (no regression)', () => {
   assert.strictEqual(ap.inferAgentProvider('codex'), 'codex');
   assert.strictEqual(ap.providerPreset('codex').defaultCommand, 'codex');

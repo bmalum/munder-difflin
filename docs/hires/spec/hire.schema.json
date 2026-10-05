@@ -40,7 +40,7 @@
       "examples": ["mint"]
     },
     "provider": {
-      "enum": ["claude", "antigravity", "agy", "codex", "cursor"],
+      "enum": ["claude", "antigravity", "agy", "codex", "cursor", "kiro"],
       "description": "Which CLI the role is designed for. 'agy' is an alias for 'antigravity'. 'custom' is deliberately not allowed — a manifest can never choose an arbitrary local binary."
     },
     "model": {
